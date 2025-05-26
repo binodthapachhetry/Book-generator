@@ -1,6 +1,11 @@
 import os
 
-import deeplake
+try:
+    import deeplake
+    DEEPLAKE_AVAILABLE = True
+except ImportError:
+    DEEPLAKE_AVAILABLE = False
+
 from dotenv import load_dotenv
 
 load_dotenv('keys.env')
@@ -8,12 +13,17 @@ load_dotenv('keys.env')
 
 class SaveToDeepLake:
     def __init__(self, buildbook_instance, dataset_path=None):
+        if not DEEPLAKE_AVAILABLE:
+            raise ImportError("Deep Lake is not available. Install with 'pip install deeplake'")
+            
         self.dataset_path = dataset_path
         
         # Check if ACTIVELOOP_TOKEN is set
         activeloop_token = os.getenv('ACTIVELOOP_TOKEN')
         if activeloop_token and activeloop_token != 'token here':
             os.environ['ACTIVELOOP_TOKEN'] = activeloop_token
+        else:
+            raise ValueError("ACTIVELOOP_TOKEN not properly configured in keys.env")
         
         try:
             self.ds = deeplake.load(dataset_path, read_only=False)

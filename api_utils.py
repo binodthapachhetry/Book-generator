@@ -44,12 +44,15 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
 
         self.source_files = self.download_images()
         
-        # Only save to Deep Lake if DATASET_PATH is configured
-        if os.getenv('DATASET_PATH'):
-            self.progress_steps += 1
-            self.progress.progress(self.progress_steps/self.total_progress_steps, "Saving to Deep Lake...")
-            self.ds = SaveToDeepLake(self, dataset_path=os.getenv('DATASET_PATH'))
-            self.ds.fill_dataset()
+        # Try to save to Deep Lake if available, but continue if it fails
+        try:
+            if os.getenv('DATASET_PATH') and os.getenv('DATASET_PATH') != 'path here':
+                self.progress_steps += 1
+                self.progress.progress(self.progress_steps/self.total_progress_steps, "Saving to Deep Lake...")
+                self.ds = SaveToDeepLake(self, dataset_path=os.getenv('DATASET_PATH'))
+                self.ds.fill_dataset()
+        except Exception as e:
+            print(f"Deep Lake storage skipped: {e}")
         
         self.list_of_tuples = self.create_list_of_tuples()
         self.progress.progress(1.0, "Done! Wait one moment while your book is processed...")
