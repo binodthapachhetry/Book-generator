@@ -4,16 +4,22 @@ import deeplake
 from dotenv import load_dotenv
 
 load_dotenv('keys.env')
-os.environ['ACTIVELOOP_TOKEN'] = os.getenv('ACTIVELOOP_TOKEN')
 
 
 class SaveToDeepLake:
     def __init__(self, buildbook_instance, dataset_path=None):
         self.dataset_path = dataset_path
+        
+        # Check if ACTIVELOOP_TOKEN is set
+        activeloop_token = os.getenv('ACTIVELOOP_TOKEN')
+        if activeloop_token and activeloop_token != 'token here':
+            os.environ['ACTIVELOOP_TOKEN'] = activeloop_token
+        
         try:
             self.ds = deeplake.load(dataset_path, read_only=False)
             self.loaded = True
-        except:
+        except Exception as e:
+            print(f"Note: {e}")
             self.ds = deeplake.empty(dataset_path)
             self.loaded = False
 
