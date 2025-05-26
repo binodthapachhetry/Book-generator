@@ -85,7 +85,7 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
         return prompts
 
     def get_list_from_text(self, text):
-        new_list = re.split('Page \d+:', text)
+        new_list = re.split(r'Page \d+:', text)
         new_list.pop(0)
         return new_list
 
