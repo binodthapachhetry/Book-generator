@@ -1,4 +1,4 @@
-#  📚 FableForge 
+#  📚 Book Generator
 
 ## 📄 Description
 
