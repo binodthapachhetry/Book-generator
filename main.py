@@ -14,7 +14,8 @@ STYLES = {
     'Japanese Ukiyo-e': 'Ukiyo-e art style, Hokusai, woodblock prints, flat areas of color, outlines, nature, Japanese culture',
     'Art Nouveau': 'Art Nouveau style, Mucha, curving lines, natural forms, ornamental, elegant, stylized',
     'Folk Art': 'Folk art style, naive art, simple shapes, bright colors, childlike, intuitive, traditional',
-    'Expressionism': 'Expressionist art style, Edvard Munch, distorted forms, dramatic colors, emotional impact, subjective'
+    'Expressionism': 'Expressionist art style, Edvard Munch, distorted forms, dramatic colors, emotional impact, subjective',
+    'Whimsical Preschool': 'childrens book illustration style, soft watercolor, friendly cartoon animals, bright primary colors, simple shapes, sparkles, smiling suns, chubby clouds, oversized flowers, happy faces, crayon-like textures, gentle gradients, minimal shading, white outlines, Disney Junior style, PBS Kids aesthetic'
 }
 
 load_dotenv('keys.env')
