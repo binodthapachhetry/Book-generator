@@ -23,7 +23,7 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
     book_text_prompt = BOOK_TEXT_PROMPT
 
     def __init__(self, model_name, input_text, style):
-        self.chat = ChatOpenAI(model_name=model_name)
+        self.chat = ChatOpenAI(model=model_name)
         self.input_text = input_text
         self.style = style
 
