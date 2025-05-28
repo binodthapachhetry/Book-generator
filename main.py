@@ -22,10 +22,10 @@ dataset_path = os.getenv('DATASET_PATH')
 
 
 def main():
-    st.title("FableForge 📚")
+    st.title("Book Generator 📚")
     user_input = st.text_input("Enter a prompt to generate a picture book based off of!", max_chars=70)
     style = st.selectbox("Select a style for your picture book!", [key for key in STYLES.keys()])
-    model = st.radio("Select a model to use", ['gpt-3.5-turbo-0613', 'gpt-4-0613'])
+    model = st.radio("Select a model to use", ['gpt-4.1-2025-04-14', 'gpt-4-0613'])
     deep_lake = st.checkbox("Save to Deep Lake?")
     if 'not_saving' not in st.session_state:
         st.session_state['not_saving'] = True
