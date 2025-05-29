@@ -1,7 +1,7 @@
 BOOK_TEXT_PROMPT = """
-Write an engaging, great 3-6 page children's picture book. Each page should have 2-3 sentences. There should be rhymes.
-We will be adding pictures of the environment/scenery for each page, so pick a pretty setting/place. Limit of 7 pages,
-do not exceed 3 sentences per page. Do not exceed 7 pages.
+Write an engaging, great 10 page children's picture book. Each page should have 2-3 sentences. There should be rhymes.
+We will be adding pictures of the environment/scenery for each page, so pick a pretty setting/place. Limit of 10 pages,
+do not exceed 3 sentences per page. Do not exceed 10 pages.
 
 Before the story begins, write a "Page 0: {title}" page. The title should be the name of the book, no more than four words.
 
@@ -24,27 +24,29 @@ get_visual_description_function = [{
     }
 }]
 
-get_character_reference_function = [{
-    'name': 'get_character_reference',
-    'description': 'Extract and define CONSISTENT visual attributes for all characters. MUST include concrete details:',
-    'parameters': {
-        'type': 'object',
-        'properties': {
-            'character_descriptions': {
-                'type': 'string',
-                'description': (
-                    'FOR EACH CHARACTER SPECIFY:\n'
-                    '- Exact hair color/length/style (e.g. "brown pigtails with red ribbon")\n'
-                    '- Precise eye color (e.g. "green eyes")\n'
-                    '- Detailed clothing (e.g. "yellow sundress with blue polka dots")\n'
-                    '- Fixed height/build (e.g. "June is 1.2x taller than Alex")\n'
-                    'EXAMPLE: "June: 5yo, brown pigtails, green eyes, yellow sundress. Alex: 3yo, blonde curls, blue eyes, striped overalls. June is 1.3x taller than Alex"'
-                )
-            }
-        },
-        'required': ['character_descriptions']
-    }
-}]
+get_character_reference_function = [{                                                                                                                                     
+    'name': 'get_character_reference',                                                                                                                                    
+    'description': 'Extract and define CONSISTENT visual attributes for all characters. If the book text does not specify an attribute, you MUST invent one that fits the story. MUST include concrete details:',                                                                                                                                   
+    'parameters': {                                                                                                                                                       
+        'type': 'object',                                                                                                                                                 
+        'properties': {                                                                                                                                                   
+            'character_descriptions': {                                                                                                                                   
+                'type': 'string',                                                                                                                                         
+                'description': (                                                                                                                                          
+                    'FOR EACH CHARACTER SPECIFY (invent if not provided in the story):\n'                                                                                 
+                    '- Full name\n'                                                                                                                                       
+                    '- Exact age or age range\n'                                                                                                                          
+                    '- Hair: color, length, style, and any accessories (e.g. "blonde pigtails with red ribbon")\n'                                                        
+                    '- Eyes: color (e.g. "green eyes")\n'                                                                                                                 
+                    '- Clothing: detailed description of typical outfit (e.g. "yellow sundress with blue polka dots")\n'                                                  
+                    '- Height/build: in absolute terms (e.g. "3 feet tall") or relative to another character (e.g. "taller than Alex")\n'                                 
+                    'EXAMPLE: "June: 5 years old, blonde pigtails with red ribbon, green eyes, yellow sundress with blue polka dots, 3.5 feet tall. Alex: 3 years old,short curly brown hair, blue eyes, striped blue overalls, 2.5 feet tall."'                                                                                                
+                )                                                                                                                                                         
+            }                                                                                                                                                             
+        },                                                                                                                                                                
+        'required': ['character_descriptions']                                                                                                                            
+    }                                                                                                                                                                     
+}]  
 
 get_lighting_and_atmosphere_function = [{
     'name': 'get_lighting_and_atmosphere',
