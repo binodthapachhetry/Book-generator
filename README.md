@@ -2,15 +2,12 @@
 
 ## 📄 Description
 
-Generate a picture book from a single prompt using [OpenAI's new function calling](https://openai.com/blog/function-calling-and-other-api-updates) and [Replicate's API](https://replicate.com/) for Google's Imagen-4. Check `example.pdf` or watch the video below for a peek at the output. 
+Generate a picture book from a single prompt using [OpenAI's new function calling](https://openai.com/blog/function-calling-and-other-api-updates) and [Replicate's API](https://replicate.com/) for Google's Imagen-4. Check [example.pdf](https://github.com/binodthapachhetry/Book-generator/blob/main/example.pdf) or watch the video below for a peek at the output. 
 
 Built with [LangChain](https://github.com/hwchase17/langchain), and [Replicate](https://replicate.com/).
 
 ## :tv: Demo
 https://github.com/e-johnstonn/FableForge/assets/30129211/f9523905-342e-4a33-914d-acd13bd168ec
-
-## 📄 Sample
-(https://github.com/binodthapachhetry/Book-generator/blob/main/result.pdf)
 
 
 ## 🛠 Install
