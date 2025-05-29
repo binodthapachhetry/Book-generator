@@ -74,18 +74,17 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
 
         def generate_prompt(page, base_dict):
             prompt = self.chat(
-                [HumanMessage(content=f'General book info: {base_dict}. General style: {self.style} Passage: {page}.'
-                                      f' Generate a visual description of the passage using the function.'
-                                      f'Creatively fill all parameters with guessed/assumed values if they are missing.')],
+                [HumanMessage(content=f'Convert this passage into visual description: "{page}". '
+                                      f'Focus on characters and actions. '
+                                      f'Atmosphere: {base_dict}. Style: {self.style}')],
                 functions=get_visual_description_function)
-            return func_json_to_dict(prompt)
+            return func_json_to_dict(prompt)['enhanced_visual']  # Directly return enhanced text
 
         with ThreadPoolExecutor(max_workers=10) as executor:
-            prompt_list = list(executor.map(generate_prompt, self.pages_list, [base_dict] * len(self.pages_list)))
-
-        prompts = prompt_combiner(prompt_list, base_dict, self.style)
-
-        return prompts
+            prompts = list(executor.map(generate_prompt, self.pages_list, [base_dict] * len(self.pages_list)))
+        
+        # Add style suffix to each prompt
+        return [f"{p}, in the style of {self.style}" for p in prompts]
 
     def get_list_from_text(self, text):
         new_list = re.split(r'Page \d+:', text)
@@ -136,24 +135,3 @@ def func_json_to_dict(response):
     return json.loads(response.additional_kwargs['function_call']['arguments'])
 
 
-def prompt_combiner(prompt_list, base_dict, style):
-    prompts = []
-    for i, prompt in enumerate(prompt_list):
-        entry = f"{prompt['characters']} {prompt['key_action']}, " \
-                f"{prompt['base_setting']}, {prompt['setting']}, " \
-                f"{prompt.get('time_of_day', '')}, {prompt.get('weather', '')}, " \
-                f"{prompt.get('specific_details', '')}, " \
-                f"{base_dict['lighting']}, {base_dict['mood']}, {base_dict['color_palette']}, in the style of {style}"
-        
-        # Clean up empty parameters
-        import re
-        entry = re.sub(r', ,', ',', entry)
-        entry = re.sub(r', \s*in the', ' in the', entry)
-        prompts.append(entry)
-    return prompts
-
-
-def process_page(chat, page, base_dict):
-    prompt = chat([HumanMessage(content=f'General book info: {base_dict}. Passage: {page}')],
-                  functions=get_visual_description_function)
-    return func_json_to_dict(prompt)
