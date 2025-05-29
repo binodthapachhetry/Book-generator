@@ -26,13 +26,20 @@ get_visual_description_function = [{
 
 get_character_reference_function = [{
     'name': 'get_character_reference',
-    'description': 'Extract and define CONSISTENT visual attributes for all characters in the story',
+    'description': 'Extract and define CONSISTENT visual attributes for all characters. MUST include concrete details:',
     'parameters': {
         'type': 'object',
         'properties': {
             'character_descriptions': {
                 'type': 'string',
-                'description': 'Consistent visual descriptions of all characters in the story. Visual attributes MUST include: 1. Age range, 2. Hair color/length/style, 3. Eye color, 4. Clothing colors/patterns, 5. Distinguishing features, 6. Height/build',
+                'description': (
+                    'FOR EACH CHARACTER SPECIFY:\n'
+                    '- Exact hair color/length/style (e.g. "brown pigtails with red ribbon")\n'
+                    '- Precise eye color (e.g. "green eyes")\n'
+                    '- Detailed clothing (e.g. "yellow sundress with blue polka dots")\n'
+                    '- Fixed height/build (e.g. "June is 1.2x taller than Alex")\n'
+                    'EXAMPLE: "June: 5yo, brown pigtails, green eyes, yellow sundress. Alex: 3yo, blonde curls, blue eyes, striped overalls. June is 1.3x taller than Alex"'
+                )
             }
         },
         'required': ['character_descriptions']

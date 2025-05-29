@@ -85,14 +85,16 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
 
         def generate_prompt(page, base_dict):
             prompt = self.chat(
-                [HumanMessage(content=f'Visual description for: "{page}"\n\n'
-                                      f'STRICT RULES:\n'
-                                      f'1. USE EXACT CHARACTER ATTRIBUTES: {base_dict["character_descriptions"]}\n'
-                                      f'2. Maintain identical clothing/hair between pages\n'
-                                      f'3. Preserve character heights relative to each other\n'
-                                      f'Focus on characters and actions. '
-                                      f'Use these character references: {base_dict["character_descriptions"]}. '
-                                      f'Atmosphere: {base_dict}. Style: {self.style}')],
+                [HumanMessage(content=(
+                    f'Visual description for: "{page}"\n\n'
+                    f'STRICT RULES:\n'
+                    f'1. USE THESE EXACT CHARACTER ATTRIBUTES: {base_dict["character_descriptions"]}\n'
+                    f'2. NEVER CHANGE: Hair color/length, eye color, clothing patterns/colors\n'
+                    f'3. PRESERVE HEIGHTS: Characters must maintain consistent relative heights\n'
+                    f'4. INCLUDE ALL ATTRIBUTES: Explicitly mention hair, eyes, clothing in every description\n'
+                    f'Focus on characters and actions. '
+                    f'Atmosphere: {base_dict}. Style: {self.style}'
+                ))],
                 functions=get_visual_description_function)
             enhanced_visual = func_json_to_dict(prompt)['enhanced_visual']
             
@@ -108,7 +110,10 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
             
             # Add character weighting if names were found
             if character_names:
-                character_weights = " ".join([f"({name}:1.3)" for name in character_names])
+                character_weights = " ".join([
+                    f"({name} with {char_desc.split(name)[1].split('.')[0] if name in char_desc else ''}:1.5)" 
+                    for name in character_names
+                ])
                 final_prompt = f"{character_weights} {enhanced_visual}, in the style of {self.style}"
             else:
                 final_prompt = f"{enhanced_visual}, in the style of {self.style}"
@@ -125,6 +130,12 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
         with ThreadPoolExecutor(max_workers=10) as executor:
             prompts = list(executor.map(generate_prompt, self.pages_list, [base_dict] * len(self.pages_list)))
         
+        # Store base_dict for consistency checks
+        self.base_dict = base_dict
+        
+        # Check character consistency
+        self.check_character_consistency()
+        
         # Print debug info to console
         print("\n" + "="*80)
         print("DEBUG: PAGE TEXT TO SD PROMPT MAPPING")
@@ -136,6 +147,19 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
         
         # Add style suffix to each prompt
         return [f"{p}, in the style of {self.style}" for p in prompts]
+    
+    def check_character_consistency(self):
+        """Verify all prompts contain required attributes"""
+        required_attributes = ["hair", "eyes", "clothing"]
+        for i, item in enumerate(self.debug_info):
+            prompt = item['final_prompt']
+            missing = [attr for attr in required_attributes if attr not in prompt.lower()]
+            if missing:
+                print(f"WARNING: Page {i+1} missing {', '.join(missing)} attributes")
+                # Auto-correct missing attributes
+                corrected = prompt + f". {self.base_dict['character_descriptions']}"
+                self.debug_info[i]['final_prompt'] = corrected
+                print(f"Auto-corrected prompt: {corrected}")
 
     def get_list_from_text(self, text):
         new_list = re.split(r'Page \d+:', text)
