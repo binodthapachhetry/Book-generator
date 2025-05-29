@@ -71,6 +71,8 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
             [HumanMessage(content=f'Generate a concise summary of the setting and visual details of the book')]).content
 
         base_dict['summary_of_book_visuals'] = summary
+        
+        self.debug_info = []  # Store page text and prompts for debugging
 
         def generate_prompt(page, base_dict):
             prompt = self.chat(
@@ -78,10 +80,29 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
                                       f'Focus on characters and actions. '
                                       f'Atmosphere: {base_dict}. Style: {self.style}')],
                 functions=get_visual_description_function)
-            return func_json_to_dict(prompt)['enhanced_visual']  # Directly return enhanced text
+            enhanced_visual = func_json_to_dict(prompt)['enhanced_visual']
+            final_prompt = f"{enhanced_visual}, in the style of {self.style}"
+            
+            # Store debug info
+            self.debug_info.append({
+                'page_text': page,
+                'enhanced_visual': enhanced_visual,
+                'final_prompt': final_prompt
+            })
+            
+            return enhanced_visual  # Return just the enhanced text
 
         with ThreadPoolExecutor(max_workers=10) as executor:
             prompts = list(executor.map(generate_prompt, self.pages_list, [base_dict] * len(self.pages_list)))
+        
+        # Print debug info to console
+        print("\n" + "="*80)
+        print("DEBUG: PAGE TEXT TO SD PROMPT MAPPING")
+        for i, item in enumerate(self.debug_info):
+            print(f"\nPage {i+1} Text:\n{item['page_text']}")
+            print(f"\nEnhanced Visual:\n{item['enhanced_visual']}")
+            print(f"\nFinal SD Prompt:\n{item['final_prompt']}")
+        print("="*80)
         
         # Add style suffix to each prompt
         return [f"{p}, in the style of {self.style}" for p in prompts]

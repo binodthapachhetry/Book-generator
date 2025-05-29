@@ -33,6 +33,18 @@ def main():
     if st.button('Generate!') and user_input and st.session_state['not_saving']:
         with st.spinner('Generating your book...'):
             build_book = BuildBook(model, user_input, f'{STYLES[style]}')
+            
+            # Display debug info
+            st.subheader("Debug: Page Text to SD Prompts")
+            for i, item in enumerate(build_book.debug_info):
+                with st.expander(f"Page {i+1}"):
+                    st.write("**Original Text:**")
+                    st.write(item['page_text'])
+                    st.write("**Enhanced Visual Description:**")
+                    st.write(item['enhanced_visual'])
+                    st.write("**Final SD Prompt:**")
+                    st.code(item['final_prompt'])
+            
             pages = build_book.list_of_tuples
             finished_pdf = build_pdf(pages, 'result.pdf')
             file_bytes = open(finished_pdf, 'rb').read()
