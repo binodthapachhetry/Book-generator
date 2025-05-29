@@ -8,13 +8,13 @@ from deep_lake_utils import SaveToDeepLake
 from pdf_gen_utils import build_pdf
 
 STYLES = {
-    'Impressionism': 'Monet, impressionist art style, loose brushstrokes, vibrant colors, painted, painted light',
-    'Cubism': 'Cubist art style, Picasso, fragmented forms, geometric shapes, angular lines, limited color palette, artistic',
-    'Surrealism': 'Surrealist art style, dreamlike, abstract art, dream-like artwork, Salvador Dalí, art',
-    'Japanese Ukiyo-e': 'Ukiyo-e art style, Hokusai, woodblock prints, flat areas of color, outlines, nature, Japanese culture',
-    'Art Nouveau': 'Art Nouveau style, Mucha, curving lines, natural forms, ornamental, elegant, stylized',
-    'Folk Art': 'Folk art style, naive art, simple shapes, bright colors, childlike, intuitive, traditional',
-    'Expressionism': 'Expressionist art style, Edvard Munch, distorted forms, dramatic colors, emotional impact, subjective',
+    # 'Impressionism': 'Monet, impressionist art style, loose brushstrokes, vibrant colors, painted, painted light',
+    # 'Cubism': 'Cubist art style, Picasso, fragmented forms, geometric shapes, angular lines, limited color palette, artistic',
+    # 'Surrealism': 'Surrealist art style, dreamlike, abstract art, dream-like artwork, Salvador Dalí, art',
+    # 'Japanese Ukiyo-e': 'Ukiyo-e art style, Hokusai, woodblock prints, flat areas of color, outlines, nature, Japanese culture',
+    # 'Art Nouveau': 'Art Nouveau style, Mucha, curving lines, natural forms, ornamental, elegant, stylized',
+    # 'Folk Art': 'Folk art style, naive art, simple shapes, bright colors, childlike, intuitive, traditional',
+    # 'Expressionism': 'Expressionist art style, Edvard Munch, distorted forms, dramatic colors, emotional impact, subjective',
     'Whimsical Preschool': 'childrens book illustration style, soft watercolor, friendly cartoon animals, bright primary colors, simple shapes, sparkles, smiling suns, chubby clouds, oversized flowers, happy faces, crayon-like textures, gentle gradients, minimal shading, white outlines, Disney Junior style, PBS Kids aesthetic'
 }
 
@@ -24,7 +24,7 @@ dataset_path = os.getenv('DATASET_PATH')
 
 def main():
     st.title("Book Generator 📚")
-    user_input = st.text_input("Enter a prompt to generate a picture book based off of!", max_chars=70)
+    user_input = st.text_input("Enter a prompt to generate a picture book based off of!", max_chars=100)
     style = st.selectbox("Select a style for your picture book!", [key for key in STYLES.keys()])
     model = st.radio("Select a model to use", ['gpt-4.1-2025-04-14', 'gpt-4-0613'])
     deep_lake = st.checkbox("Save to Deep Lake?")
