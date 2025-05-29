@@ -182,14 +182,25 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
 
         def generate_image(i, prompt):
             print(f'{prompt} is the prompt for page {i + 1}')
+
+            # output = replicate.run(
+            #     "stability-ai/stable-diffusion:db21e45d3f7023abc2a46ee38a23973f6dce16bb082a930b0c49861f96d1e5bf",
+            #     input={"prompt": 'art,' + prompt,
+            #            "seed": self.seed,  # Fixed seed for consistency
+            #            "negative_prompt": "photorealistic, photograph, bad anatomy, blurry, gross,"
+            #                               "weird eyes, creepy, text, words, letters, realistic"
+            #            },
+            # )
+
             output = replicate.run(
-                "stability-ai/stable-diffusion:db21e45d3f7023abc2a46ee38a23973f6dce16bb082a930b0c49861f96d1e5bf",
-                input={"prompt": 'art,' + prompt,
-                       "seed": self.seed,  # Fixed seed for consistency
-                       "negative_prompt": "photorealistic, photograph, bad anatomy, blurry, gross,"
-                                          "weird eyes, creepy, text, words, letters, realistic"
-                       },
+                "google/imagen-4",
+                input={
+                    "prompt": 'art,' + prompt,
+                    "aspect_ratio": "16:9",
+                    "safety_filter_level": "block_low_and_above"
+                }
             )
+
             return output[0]
 
         with ThreadPoolExecutor(max_workers=10) as executor:
