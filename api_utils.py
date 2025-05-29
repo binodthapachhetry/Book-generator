@@ -78,7 +78,11 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
             [HumanMessage(content=(                                                                                                                                            
                 f'Extract and define consistent visual attributes for all characters from: {self.book_text}. '                                                                 
                 'If the book text does not specify an attribute, invent one that fits the story. '                                                                            
-                'Include every main character and specify all required attributes (hair, eyes, clothing, height).'                                                            
+                'SPECIFICALLY INCLUDE for EACH character: '
+                '- Detailed clothing descriptions (colors, patterns, styles) '
+                '- Exact hair color and style '
+                '- Precise eye color '
+                '- Height/build relative to other characters'                                                           
                 ))],                                                                                                                                                               
                 functions=get_character_reference_function                                                                                                                         
             )                                                                                                                                                                      
@@ -121,7 +125,7 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
             # Add character weighting if names were found
             if character_names:
                 character_weights = " ".join([
-                    f"({name} with {char_desc.split(name)[1].split('.')[0] if name in char_desc else ''}:1.5)" 
+                    f"({name}:1.3 wearing {char_desc.split('wearing')[1].split('.')[0] if 'wearing' in char_desc else ''}, {char_desc.split(name)[1].split('.')[0] if name in char_desc else ''})" 
                     for name in character_names
                 ])
                 final_prompt = f"{character_weights} {enhanced_visual}, in the style of {self.style}"
@@ -160,16 +164,38 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
     
     def check_character_consistency(self):
         """Verify all prompts contain required attributes"""
-        required_attributes = ["hair", "eyes", "clothing"]
+        # More flexible attribute detection
+        attribute_indicators = {
+            "clothing": ["clothing", "outfit", "wearing", "dressed", "attire"],
+            "hair": ["hair", "hairstyle", "braids", "curls", "pigtails"],
+            "eyes": ["eyes", "eye color", "blue eyes", "green eyes", "brown eyes"]
+        }
+        
         for i, item in enumerate(self.debug_info):
-            prompt = item['final_prompt']
-            missing = [attr for attr in required_attributes if attr not in prompt.lower()]
+            prompt = item['final_prompt'].lower()
+            missing = []
+            
+            # Check for any indicator of each attribute
+            if not any(indicator in prompt for indicator in attribute_indicators["clothing"]):
+                missing.append("clothing")
+            if not any(indicator in prompt for indicator in attribute_indicators["hair"]):
+                missing.append("hair")
+            if not any(indicator in prompt for indicator in attribute_indicators["eyes"]):
+                missing.append("eyes")
+            
             if missing:
                 print(f"WARNING: Page {i+1} missing {', '.join(missing)} attributes")
-                # Auto-correct missing attributes
-                corrected = prompt + f". {self.base_dict['character_descriptions']}"
+                # Auto-correct by appending ONLY missing attributes
+                correction = []
+                if "clothing" in missing:
+                    correction.append("detailed clothing description")
+                if "hair" in missing:
+                    correction.append("specific hair details")
+                if "eyes" in missing:
+                    correction.append("eye color")
+                    
+                corrected = prompt + f". {', '.join(correction)} from {self.base_dict['character_descriptions']}"
                 self.debug_info[i]['final_prompt'] = corrected
-                # print(f"Auto-corrected prompt: {corrected}")
 
     def get_list_from_text(self, text):
         new_list = re.split(r'Page \d+:', text)
