@@ -9,7 +9,7 @@ import replicate
 
 import json
 
-from prompts import *
+from prompts import BOOK_TEXT_PROMPT, get_visual_description_function, get_lighting_and_atmosphere_function, get_character_reference_function
 from deep_lake_utils import SaveToDeepLake
 
 import requests
@@ -67,10 +67,18 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
                     f'{self.book_text}')], functions=get_lighting_and_atmosphere_function)
         base_dict = func_json_to_dict(base_atmosphere)
 
+        # Get consistent character reference
+        character_ref = self.chat(
+            [HumanMessage(content=f'Extract consistent character descriptions from: {self.book_text}')],
+            functions=get_character_reference_function
+        )
+        character_descriptions = func_json_to_dict(character_ref)['character_descriptions']
+
         summary = self.chat(
             [HumanMessage(content=f'Generate a concise summary of the setting and visual details of the book')]).content
 
         base_dict['summary_of_book_visuals'] = summary
+        base_dict['character_descriptions'] = character_descriptions
         
         self.debug_info = []  # Store page text and prompts for debugging
 
@@ -78,6 +86,7 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
             prompt = self.chat(
                 [HumanMessage(content=f'Convert this passage into visual description: "{page}". '
                                       f'Focus on characters and actions. '
+                                      f'Use these character references: {base_dict["character_descriptions"]}. '
                                       f'Atmosphere: {base_dict}. Style: {self.style}')],
                 functions=get_visual_description_function)
             enhanced_visual = func_json_to_dict(prompt)['enhanced_visual']

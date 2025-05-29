@@ -11,7 +11,7 @@ Format like: Page 0: {title}, Page 1: {text}, etc. Do not write anything else.
 
 get_visual_description_function = [{
     'name': 'get_passage_setting',
-    'description': 'Enhance the passage into a detailed visual description for image generation. Focus on converting narrative to visual elements while preserving key actions and characters',
+    'description': 'Enhance the passage into a detailed visual description for image generation. Focus on converting narrative to visual elements while MAINTAINING CHARACTER CONSISTENCY. Preserve key actions and characters EXACTLY as described in character references.',
     'parameters': {
         'type': 'object',
         'properties': {
@@ -21,6 +21,21 @@ get_visual_description_function = [{
             }
         },
         'required': ['enhanced_visual']
+    }
+}]
+
+get_character_reference_function = [{
+    'name': 'get_character_reference',
+    'description': 'Extract and define consistent visual descriptions of all characters in the story',
+    'parameters': {
+        'type': 'object',
+        'properties': {
+            'character_descriptions': {
+                'type': 'string',
+                'description': 'Consistent visual descriptions of all characters in the story',
+            }
+        },
+        'required': ['character_descriptions']
     }
 }]
 
