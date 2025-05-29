@@ -11,36 +11,40 @@ Format like: Page 0: {title}, Page 1: {text}, etc. Do not write anything else.
 
 get_visual_description_function = [{
     'name': 'get_passage_setting',
-    'description': 'Generate and describe the visuals of a passage in a book. Visuals only, no characters, plot, or people. Highly detailed',
+    'description': 'Generate a highly detailed visual description of a story passage including characters, actions, and setting',
     'parameters': {
         'type': 'object',
         'properties': {
+            'characters': {
+                'type': 'string',
+                'description': 'Main characters in the scene including their appearance, emotions, and actions',
+            },
+            'key_action': {
+                'type': 'string',
+                'description': 'The primary action happening in the scene',
+            },
             'base_setting': {
                 'type': 'string',
-                'description': 'The base setting of the passage, e.g. ancient Rome, Switzerland, etc.',
+                'description': 'General location (e.g. forest, village)',
             },
             'setting': {
                 'type': 'string',
-                'description': 'The detailed visual setting of the passage, e.g. a a snowy mountain village',
+                'description': 'The detailed visual setting of the passage, e.g. a snowy mountain village',
             },
             'time_of_day': {
                 'type': 'string',
-                'description': 'The detailed time of day of the passage, e.g. nighttime, daytime, dawn.',
+                'description': 'The time of day of the passage, e.g. nighttime, daytime, dawn.',
             },
             'weather': {
                 'type': 'string',
-                'description': 'The detailed weather of the passage, eg. heavy rain with dark clouds.',
-            },
-            'key_elements': {
-                'type': 'string',
-                'description': 'The detailed key visual elements of the passage, eg colorful houses, a church, and a lake. ',
+                'description': 'The weather of the passage, eg. heavy rain with dark clouds.',
             },
             'specific_details': {
                 'type': 'string',
-                'description': 'The detailed specific visual details of the passage, eg lake reflecting the sky.',
+                'description': 'Background objects and atmospheric details of the passage.',
             }
         },
-        'required': ['base_setting', 'setting', 'time_of_day', 'weather', 'key_elements', 'specific_details']
+        'required': ['characters', 'key_action', 'base_setting', 'setting']
     }
 }]
 

@@ -139,8 +139,16 @@ def func_json_to_dict(response):
 def prompt_combiner(prompt_list, base_dict, style):
     prompts = []
     for i, prompt in enumerate(prompt_list):
-        entry = f"{prompt['base_setting']}, {prompt['setting']}, {prompt['time_of_day']}, {prompt['weather']}, {prompt['key_elements']}, {prompt['specific_details']}, " \
+        entry = f"{prompt['characters']} {prompt['key_action']}, " \
+                f"{prompt['base_setting']}, {prompt['setting']}, " \
+                f"{prompt.get('time_of_day', '')}, {prompt.get('weather', '')}, " \
+                f"{prompt.get('specific_details', '')}, " \
                 f"{base_dict['lighting']}, {base_dict['mood']}, {base_dict['color_palette']}, in the style of {style}"
+        
+        # Clean up empty parameters
+        import re
+        entry = re.sub(r', ,', ',', entry)
+        entry = re.sub(r', \s*in the', ' in the', entry)
         prompts.append(entry)
     return prompts
 
