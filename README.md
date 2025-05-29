@@ -7,7 +7,7 @@ Generate a picture book from a single prompt using [OpenAI's new function callin
 Built with [LangChain](https://github.com/hwchase17/langchain), and [Replicate](https://replicate.com/).
 
 ## :tv: Demo
-https://storage.cloud.google.com/bucket4misc/BookGenerator_demo.mov
+(https://storage.cloud.google.com/bucket4misc/BookGenerator_demo.mov)
 
 
 ## 🛠 Install
