@@ -146,14 +146,14 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
         # Check character consistency
         self.check_character_consistency()
         
-        # Print debug info to console
-        print("\n" + "="*80)
-        print("DEBUG: PAGE TEXT TO SD PROMPT MAPPING")
-        for i, item in enumerate(self.debug_info):
-            print(f"\nPage {i+1} Text:\n{item['page_text']}")
-            print(f"\nEnhanced Visual:\n{item['enhanced_visual']}")
-            print(f"\nFinal SD Prompt:\n{item['final_prompt']}")
-        print("="*80)
+        # # Print debug info to console
+        # print("\n" + "="*80)
+        # print("DEBUG: PAGE TEXT TO SD PROMPT MAPPING")
+        # for i, item in enumerate(self.debug_info):
+        #     print(f"\nPage {i+1} Text:\n{item['page_text']}")
+        #     print(f"\nEnhanced Visual:\n{item['enhanced_visual']}")
+        #     print(f"\nFinal SD Prompt:\n{item['final_prompt']}")
+        # print("="*80)
         
         # Add style suffix to each prompt
         return [f"{p}, in the style of {self.style}" for p in prompts]
@@ -169,7 +169,7 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
                 # Auto-correct missing attributes
                 corrected = prompt + f". {self.base_dict['character_descriptions']}"
                 self.debug_info[i]['final_prompt'] = corrected
-                print(f"Auto-corrected prompt: {corrected}")
+                # print(f"Auto-corrected prompt: {corrected}")
 
     def get_list_from_text(self, text):
         new_list = re.split(r'Page \d+:', text)
@@ -181,7 +181,7 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
             raise 'Pages and Prompts do not match'
 
         def generate_image(i, prompt):
-            print(f'{prompt} is the prompt for page {i + 1}')
+            # print(f'{prompt} is the prompt for page {i + 1}')
 
             # output = replicate.run(
             #     "stability-ai/stable-diffusion:db21e45d3f7023abc2a46ee38a23973f6dce16bb082a930b0c49861f96d1e5bf",
@@ -193,15 +193,14 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
             # )
 
             output = replicate.run(
-                "google/imagen-4",
+                "google/imagen-4:573cdf74dfdf9b1a42fc327a3887f96caa6f1bf90d086511b486792152abb9d9",
                 input={
                     "prompt": 'art,' + prompt,
                     "aspect_ratio": "16:9",
                     "safety_filter_level": "block_low_and_above"
                 }
             )
-
-            return output[0]
+            return output
 
         with ThreadPoolExecutor(max_workers=10) as executor:
             image_urls = list(executor.map(generate_image, range(len(self.sd_prompts_list)), self.sd_prompts_list))
