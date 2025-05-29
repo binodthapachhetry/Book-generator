@@ -7,9 +7,10 @@ Generate a picture book from a single prompt using [OpenAI's new function callin
 Built with [LangChain](https://github.com/hwchase17/langchain), and [Replicate](https://replicate.com/).
 
 ## :tv: Demo
-
-
 https://github.com/e-johnstonn/FableForge/assets/30129211/f9523905-342e-4a33-914d-acd13bd168ec
+
+## 📄 Sample
+(https://github.com/binodthapachhetry/Book-generator/blob/main/result.pdf)
 
 
 ## 🛠 Install
@@ -24,7 +25,7 @@ A Replicate API key is necessary for this app. To get one, go to the [Replicate 
 
 ## 📐Architecture
 
-![architecture](https://github.com/e-johnstonn/FableForge/assets/30129211/54dbaa98-5a89-4af4-8ff2-9640a40e773c)
+![architecture](https://github.com/binodthapachhetry/Book-generator/blob/main/ARCHITECTURE.md)
 
 
 ## Improvements

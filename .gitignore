@@ -1,4 +1,5 @@
 .aider*
 images/*
 keys.env
-
+__pycache__/*
+images/*
