@@ -26,13 +26,13 @@ get_visual_description_function = [{
 
 get_character_reference_function = [{
     'name': 'get_character_reference',
-    'description': 'Extract and define consistent visual descriptions of all characters in the story',
+    'description': 'Extract and define CONSISTENT visual attributes for all characters in the story',
     'parameters': {
         'type': 'object',
         'properties': {
             'character_descriptions': {
                 'type': 'string',
-                'description': 'Consistent visual descriptions of all characters in the story',
+                'description': 'Consistent visual descriptions of all characters in the story. Visual attributes MUST include: 1. Age range, 2. Hair color/length/style, 3. Eye color, 4. Clothing colors/patterns, 5. Distinguishing features, 6. Height/build',
             }
         },
         'required': ['character_descriptions']

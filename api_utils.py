@@ -26,6 +26,7 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
         self.chat = ChatOpenAI(model=model_name)
         self.input_text = input_text
         self.style = style
+        self.seed = 42  # Fixed seed for all images
 
         self.progress = st.progress(0)
         self.progress_steps = 0
@@ -84,13 +85,33 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
 
         def generate_prompt(page, base_dict):
             prompt = self.chat(
-                [HumanMessage(content=f'Convert this passage into visual description: "{page}". '
+                [HumanMessage(content=f'Visual description for: "{page}"\n\n'
+                                      f'STRICT RULES:\n'
+                                      f'1. USE EXACT CHARACTER ATTRIBUTES: {base_dict["character_descriptions"]}\n'
+                                      f'2. Maintain identical clothing/hair between pages\n'
+                                      f'3. Preserve character heights relative to each other\n'
                                       f'Focus on characters and actions. '
                                       f'Use these character references: {base_dict["character_descriptions"]}. '
                                       f'Atmosphere: {base_dict}. Style: {self.style}')],
                 functions=get_visual_description_function)
             enhanced_visual = func_json_to_dict(prompt)['enhanced_visual']
-            final_prompt = f"{enhanced_visual}, in the style of {self.style}"
+            
+            # Extract character names from descriptions to add weighting
+            character_names = []
+            char_desc = base_dict["character_descriptions"]
+            # Simple extraction - looks for capitalized words that might be names
+            import re
+            potential_names = re.findall(r'\b[A-Z][a-z]+\b', char_desc)
+            # Filter out common non-name capitalized words
+            common_words = ["The", "A", "An", "In", "On", "At", "With"]
+            character_names = [name for name in potential_names if name not in common_words]
+            
+            # Add character weighting if names were found
+            if character_names:
+                character_weights = " ".join([f"({name}:1.3)" for name in character_names])
+                final_prompt = f"{character_weights} {enhanced_visual}, in the style of {self.style}"
+            else:
+                final_prompt = f"{enhanced_visual}, in the style of {self.style}"
             
             # Store debug info
             self.debug_info.append({
@@ -130,6 +151,7 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
             output = replicate.run(
                 "stability-ai/stable-diffusion:db21e45d3f7023abc2a46ee38a23973f6dce16bb082a930b0c49861f96d1e5bf",
                 input={"prompt": 'art,' + prompt,
+                       "seed": self.seed,  # Fixed seed for consistency
                        "negative_prompt": "photorealistic, photograph, bad anatomy, blurry, gross,"
                                           "weird eyes, creepy, text, words, letters, realistic"
                        },
