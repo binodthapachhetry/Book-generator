@@ -73,6 +73,16 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
             [HumanMessage(content=f'Extract consistent character descriptions from: {self.book_text}')],
             functions=get_character_reference_function
         )
+
+        character_ref = self.chat(                                                                                                                                             
+            [HumanMessage(content=(                                                                                                                                            
+                f'Extract and define consistent visual attributes for all characters from: {self.book_text}. '                                                                 
+                'If the book text does not specify an attribute, invent one that fits the story. '                                                                            
+                'Include every main character and specify all required attributes (hair, eyes, clothing, height).'                                                            
+                ))],                                                                                                                                                               
+                functions=get_character_reference_function                                                                                                                         
+            )                                                                                                                                                                      
+     
         character_descriptions = func_json_to_dict(character_ref)['character_descriptions']
 
         summary = self.chat(
