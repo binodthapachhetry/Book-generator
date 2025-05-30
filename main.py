@@ -1,7 +1,9 @@
 import os
+import time
 
 from dotenv import load_dotenv
 import streamlit as st
+import wandb
 
 from api_utils import BuildBook
 from deep_lake_utils import SaveToDeepLake
@@ -19,13 +21,33 @@ def main():
     st.title("Book Generator 📚")
     user_input = st.text_input("Enter a prompt to generate a picture book based off of!", max_chars=250)
     style = st.selectbox("Select a style for your picture book!", [key for key in STYLES.keys()])
-    model = st.radio("Select a model to use", ['gpt-4.1-2025-04-14'])
+    model = st.radio("Select model", 
+                ['gpt-4 (Production)', 'gpt-4o (Experimental)'],
+                help="Canary release: 10% traffic to experimental")
     # deep_lake = st.checkbox("Save to Deep Lake?")
     if 'not_saving' not in st.session_state:
         st.session_state['not_saving'] = True
     if st.button('Generate!') and user_input and st.session_state['not_saving']:
         with st.spinner('Generating your book...'):
+            # Initialize W&B tracking
+            wandb.init(project="book-generator", config={
+                "model": model,
+                "style": style,
+                "prompt": user_input
+            })
+            
+            start_time = time.time()
             build_book = BuildBook(model, user_input, f'{STYLES[style]}')
+            
+            # Log metrics to W&B
+            gen_time = time.time() - start_time
+            wandb.log({
+                "generation_time": gen_time,
+                "page_count": len(build_book.pages_list)
+            })
+            
+            # Log images to W&B
+            wandb.log({"output_images": [wandb.Image(img) for img in build_book.source_files]})
             
             # Display debug info
             st.subheader("Debug: Page Text to SD Prompts")
@@ -45,6 +67,9 @@ def main():
                                key='download_button')
             st.write('Your book has been generated! Click the download button to download it. It is also saved'
                      'in the project directory.')
+            
+            # Finish W&B run
+            wandb.finish()
         # if deep_lake and st.session_state['not_saving']:
         #     st.session_state['not_saving'] = False
         #     with st.spinner('Saving to DeepLake...'):
