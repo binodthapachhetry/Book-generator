@@ -23,11 +23,8 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
     book_text_prompt = BOOK_TEXT_PROMPT
 
     def __init__(self, model_name, input_text, style):
-        # Handle canary model selection
-        if "Experimental" in model_name:
-            self.chat = ChatOpenAI(model="gpt-4o", temperature=0.7)
-        else:
-            self.chat = ChatOpenAI(model="gpt-4", temperature=0.4)
+        self.chat = ChatOpenAI(model=model_name) 
+        
         self.input_text = input_text
         self.style = style
         self.seed = 42  # Fixed seed for all images

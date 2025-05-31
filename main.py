@@ -22,8 +22,7 @@ def main():
     user_input = st.text_input("Enter a prompt to generate a picture book based off of!", max_chars=250)
     style = st.selectbox("Select a style for your picture book!", [key for key in STYLES.keys()])
     model = st.radio("Select model", 
-                ['gpt-4 (Production)', 'gpt-4o (Experimental)'],
-                help="Canary release: 10% traffic to experimental")
+                ['gpt-4.1-2025-04-14'])
     # deep_lake = st.checkbox("Save to Deep Lake?")
     if 'not_saving' not in st.session_state:
         st.session_state['not_saving'] = True
