@@ -16,6 +16,10 @@ STYLES = {
 load_dotenv('keys.env')
 dataset_path = os.getenv('DATASET_PATH')
 
+# Check for W&B API key
+if not os.getenv('WANDB_API_KEY'):
+    st.warning("W&B tracking disabled: missing API key")
+
 
 def main():
     st.title("Book Generator 📚")
