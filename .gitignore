@@ -3,3 +3,4 @@ images/*
 keys.env
 __pycache__/*
 wandb/*
+result.pdf*

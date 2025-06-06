@@ -10,7 +10,7 @@ from deep_lake_utils import SaveToDeepLake
 from pdf_gen_utils import build_pdf
 
 STYLES = {
-    'Whimsical': 'childrens book illustration style, soft watercolor, friendly cartoon animals, bright primary colors, simple shapes, sparkles, smiling suns, chubby clouds, oversized flowers, happy faces, crayon-like textures, gentle gradients, minimal shading, white outlines, Disney Junior style, PBS Kids aesthetic'
+    'Whimsical': 'childrens book illustration style, soft watercolor, subtle primary colors, crayon-like textures, gentle gradients, minimal shading, white outlines, Disney Junior style, PBS Kids aesthetic'
 }
 
 load_dotenv('keys.env')
