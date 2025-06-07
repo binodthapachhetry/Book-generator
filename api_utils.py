@@ -2,6 +2,7 @@ import re
 import os
 from concurrent.futures import ThreadPoolExecutor
 
+from trace_utils import trace_time, trace_cost
 from dotenv import load_dotenv
 from langchain.chat_models import ChatOpenAI
 from langchain.schema import HumanMessage
@@ -59,10 +60,14 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
         self.list_of_tuples = self.create_list_of_tuples()
         self.progress.progress(1.0, "Done! Wait one moment while your book is processed...")
 
+    @trace_time
+    @trace_cost
     def get_pages(self):
         pages = self.chat([HumanMessage(content=f'{self.book_text_prompt} Topic: {self.input_text}')]).content
         return pages
 
+    @trace_time
+    @trace_cost
     def get_prompts(self):
         base_atmosphere = self.chat([HumanMessage(
             content=f'Generate a visual description of the overall lightning/atmosphere of this book using the function.'
@@ -203,6 +208,8 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
         new_list.pop(0)
         return new_list
 
+    @trace_time
+    @trace_cost
     def create_images(self):
         if len(self.pages_list) != len(self.sd_prompts_list):
             raise 'Pages and Prompts do not match'
@@ -234,6 +241,8 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
 
         return image_urls
 
+    @trace_time
+    @trace_cost
     def download_images(self):
         image_urls = self.create_images()
         source_files = []
