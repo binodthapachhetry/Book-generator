@@ -6,7 +6,7 @@ from trace_utils import trace_time, trace_cost
 from dotenv import load_dotenv
 from langchain.chat_models import ChatOpenAI
 from langchain.schema import HumanMessage
-import replicate
+from replicate_stub import run as replicate_run
 
 import json
 
@@ -226,7 +226,7 @@ class BuildBook:  # The do-it-all class that builds the book (and creates stream
             #            },
             # )
 
-            output = replicate.run(
+            output = replicate_run(
                 "google/imagen-4:573cdf74dfdf9b1a42fc327a3887f96caa6f1bf90d086511b486792152abb9d9",
                 input={
                     "prompt": 'art,' + prompt,
